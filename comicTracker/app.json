@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "comicTracker",
-    "slug": "comicTracker",
+    "slug": "comickeeper",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,6 +13,12 @@
       "backgroundColor": "#ffffff"
     },
     "jsEngine": "hermes",
+    "extra": {
+      "eas": {
+        "projectId": "16b6ec96-fcc4-479c-8ac7-ae69b1cff1ad",
+        "slug": "comicTracker"
+      }
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -20,7 +26,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "runtimeVersion": {
+        "policy": "appVersion"
+      },
+      "package": "com.comickeeper.app"
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +43,9 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "updates": {
+      "url": "https://u.expo.dev/16b6ec96-fcc4-479c-8ac7-ae69b1cff1ad"
     }
   }
 }
