@@ -57,11 +57,11 @@ export default function ComicTile({
 		});
 
 	return (
-		<Animated.View
-			style={styles.container}
-			onTouchEnd={() => onPress(data)}>
+		<Animated.View style={styles.container}>
 			<GestureDetector gesture={gesture}>
-				<Animated.View style={[styles.comicTile, animatedStyle]}>
+				<Animated.View
+					style={[styles.comicTile, animatedStyle]}
+					onTouchEnd={() => onPress(data)}>
 					{data.imgUrl ? (
 						<ThemedImage
 							style={styles.image}

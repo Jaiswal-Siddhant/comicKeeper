@@ -18,8 +18,6 @@ const Explore1 = () => {
 
 	const handleExportAsJson = async () => {
 		try {
-			// if (process.env.NODE_ENV === 'development') return;
-
 			FullPageLoader.open();
 			const allComics = await getAllComics();
 
