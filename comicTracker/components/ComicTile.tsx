@@ -21,9 +21,11 @@ import ThemedImage from './Themed/ThemedImage';
 export default function ComicTile({
 	data,
 	onDelete,
+	onPress,
 }: {
 	data: ComicData;
 	onDelete: (title: string) => void;
+	onPress: (data: ComicData) => void;
 }) {
 	const translateX = useSharedValue(0);
 
@@ -55,7 +57,9 @@ export default function ComicTile({
 		});
 
 	return (
-		<Animated.View style={styles.container}>
+		<Animated.View
+			style={styles.container}
+			onTouchEnd={() => onPress(data)}>
 			<GestureDetector gesture={gesture}>
 				<Animated.View style={[styles.comicTile, animatedStyle]}>
 					{data.imgUrl ? (

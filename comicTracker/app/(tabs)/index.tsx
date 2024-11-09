@@ -12,6 +12,7 @@ import {
 	AddComic,
 	AppHeader,
 	ComicTile,
+	EditComic,
 	FullPageLoader,
 	ThemedButton,
 	ThemedInput,
@@ -37,9 +38,12 @@ type FilterBy = 'ascending' | 'descending' | '';
 
 export default function HomeScreen() {
 	const bottomSheetModalRef = useRef<CustomBottomSheetRef>(null);
+	const prePopulateBottomSheetModalRef = useRef<CustomBottomSheetRef>(null);
 	const [myComics, setMyComic] = useState<ComicData[]>([]);
 	const [refreshing, setRefreshing] = useState(false);
-	const [isSortedAscending, setIsSortedAscending] = useState(false);
+	const [prePopulatedData, setPrePopulatedData] = useState<ComicData | null>(
+		null
+	);
 	const [filterBy, setFilterBy] = useState<FilterBy>('');
 	const [searchQuery, setSearchQuery] = useState('');
 	const rotation = useSharedValue(0);
@@ -59,7 +63,6 @@ export default function HomeScreen() {
 
 	const handleSorting = () => {
 		FullPageLoader.open();
-		// setIsSortedAscending(!isSortedAscending);
 
 		if (filterBy === 'ascending') {
 			setFilterBy('descending');
@@ -126,6 +129,11 @@ export default function HomeScreen() {
 		return filterBy == 'ascending' ? comparison : -comparison;
 	};
 
+	const handleComicTilePress = (data: ComicData) => {
+		setPrePopulatedData(data);
+		prePopulateBottomSheetModalRef.current?.present();
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.appWrapper}>
@@ -167,6 +175,7 @@ export default function HomeScreen() {
 									key={comic.title + index}
 									data={comic}
 									onDelete={handleComicDelete}
+									onPress={handleComicTilePress}
 								/>
 							))}
 					</ThemedView>
@@ -190,6 +199,13 @@ export default function HomeScreen() {
 				<AddComic
 					bottomSheetModalRef={bottomSheetModalRef}
 					onAdded={getComics}
+				/>
+			</CustomBottomSheet>
+			<CustomBottomSheet ref={prePopulateBottomSheetModalRef}>
+				<EditComic
+					bottomSheetModalRef={prePopulateBottomSheetModalRef}
+					onAdded={getComics}
+					prePopulatedData={prePopulatedData!}
 				/>
 			</CustomBottomSheet>
 		</SafeAreaView>

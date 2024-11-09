@@ -1,4 +1,11 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+	Image,
+	StyleSheet,
+	Switch,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import { RefObject, useCallback, useEffect, useState } from 'react';
 import { ThemedText } from './ThemedText';
 import ThemedInput from './Themed/ThemedInput';
@@ -17,17 +24,20 @@ import { SearchComicResponse } from '@/@types/SearchComic';
 import { ComicData } from '@/@types/ComicDataType';
 import { ThemedButton } from './ThemedButton';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { addComicToDB } from '@/db/comicDB';
+import { addComicToDB, updateComic } from '@/db/comicDB';
 import { CustomBottomSheetRef } from './CustomBottomSheet';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { getCurrentDate } from '@/utils/getDate';
+import ThemedSwitch from './Themed/ThemedSwitch';
 
-export default function AddComic({
+export default function EditComic({
 	bottomSheetModalRef,
 	onAdded,
+	prePopulatedData,
 }: {
 	bottomSheetModalRef: RefObject<CustomBottomSheetRef>;
 	onAdded: () => void;
+	prePopulatedData: ComicData;
 }) {
 	const [comicData, setComicData] = useState<ComicData>({
 		title: '',
@@ -94,11 +104,14 @@ export default function AddComic({
 		}
 	};
 
-	const handleComicDataChange = (key: keyof ComicData, value: string) => {
+	const handleComicDataChange = (
+		key: keyof ComicData,
+		value: string | boolean
+	) => {
 		setComicData({ ...comicData, [key]: value });
 	};
 
-	const handleAddComic = async () => {
+	const handleEditComic = async () => {
 		try {
 			if (
 				!comicData.title ||
@@ -111,14 +124,14 @@ export default function AddComic({
 
 			if (comicData.lastRead.length > 0) lastRead = comicData.lastRead;
 
-			await addComicToDB({
+			await updateComic({
 				...comicData,
 				lastRead,
 			});
 			bottomSheetModalRef.current?.close();
 			onAdded();
 		} catch (error) {
-			console.log('Error in handleAddComic', error);
+			console.log('Error in handleEditComic', error);
 		}
 	};
 
@@ -141,9 +154,16 @@ export default function AddComic({
 		});
 	};
 
+	useEffect(() => {
+		if (prePopulatedData) {
+			console.log('prePopulatedData', prePopulatedData);
+			setComicData(prePopulatedData);
+		}
+	}, []);
+
 	return (
 		<KeyboardAwareScrollView style={styles.container}>
-			<ThemedText style={styles.Heading}>Add a comic</ThemedText>
+			<ThemedText style={styles.Heading}>Edit comic</ThemedText>
 			{comicData.imgUrl && (
 				<Image
 					style={{
@@ -162,6 +182,16 @@ export default function AddComic({
 					handleChangeName(text);
 				}}
 				value={comicData.title}
+			/>
+			<ThemedSwitch
+				value={comicData.isCompleted}
+				switchText='Is Comic Completed'
+				onChange={() => {
+					handleComicDataChange(
+						'isCompleted',
+						!comicData.isCompleted
+					);
+				}}
 			/>
 
 			{showOptions && options?.length > 0 && (
@@ -238,9 +268,9 @@ export default function AddComic({
 			/>
 
 			<ThemedButton
-				title='Add Comic'
+				title='Edit Comic'
 				style={styles.AddBtn}
-				onClick={handleAddComic}
+				onClick={handleEditComic}
 			/>
 		</KeyboardAwareScrollView>
 	);

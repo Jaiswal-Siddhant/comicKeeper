@@ -11,6 +11,8 @@ import ThemedInput from './Themed/ThemedInput';
 import AddComic from './AddComic';
 import { FullPageLoader } from './Loader';
 import ThemedImage from './Themed/ThemedImage';
+import EditComic from './EditComic';
+import ThemedSwitch from './Themed/ThemedSwitch';
 
 export {
 	ThemedText,
@@ -26,4 +28,6 @@ export {
 	AddComic,
 	FullPageLoader,
 	ThemedImage,
+	EditComic,
+	ThemedSwitch,
 };

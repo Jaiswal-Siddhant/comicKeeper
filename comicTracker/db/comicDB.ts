@@ -70,7 +70,7 @@ export const getComicByTitle = async (title: string) => {
 	}
 };
 
-export const updateComic = (comic: ComicData) => {
+export const updateComic = async (comic: ComicData) => {
 	const {
 		title,
 		readChapters,
@@ -82,7 +82,7 @@ export const updateComic = (comic: ComicData) => {
 	} = comic;
 
 	try {
-		db.runSync(
+		await db.runAsync(
 			`UPDATE comics SET readChapters = ?, totalChapters = ?, isCompleted = ?, lastRead = ?, description = ?, imgUrl = ? WHERE title = ?;`,
 			readChapters,
 			totalChapters,
