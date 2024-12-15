@@ -7,7 +7,7 @@ export interface SearchComicResponse {
 	startDate?: string;
 	thumbnail?: string;
 	title?: string;
-	type?: Type;
+	type?: Type | string;
 	url?: string;
 	video?: null;
 	vols?: string;

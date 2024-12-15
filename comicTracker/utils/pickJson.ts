@@ -17,6 +17,7 @@ const pickJsonFile = async () => {
 		const fileContent = await FileSystem.readAsStringAsync(fileUri);
 
 		const parsedData = JSON.parse(fileContent);
+		console.log('parsed', parsedData);
 		return parsedData;
 	} catch (err) {
 		console.error('Error reading JSON file:', err);

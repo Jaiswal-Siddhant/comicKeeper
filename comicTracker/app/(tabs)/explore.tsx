@@ -1,7 +1,12 @@
 import { StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AppHeader, ThemedInput } from '@/components';
+import {
+	AppHeader,
+	FullPageLoader,
+	StandardComicTile,
+	ThemedInput,
+} from '@/components';
 import Animated, {
 	useAnimatedStyle,
 	useSharedValue,
@@ -10,14 +15,38 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
+import { searchComic } from '@/lib';
+import { ScrollView } from 'react-native-gesture-handler';
+import { SearchComicResponse } from '@/@types/SearchComic';
+import { router } from 'expo-router';
 
 export default function TabTwoScreen() {
+	const [searchedComics, setSearchedComics] = useState<SearchComicResponse[]>(
+		[]
+	);
 	const [searchQuery, setSearchQuery] = useState('');
 	const animatedWidth = useSharedValue(85);
 
 	const animatedWidthStyle = useAnimatedStyle(() => ({
 		width: `${animatedWidth.value}%`,
 	}));
+
+	const searchAPI = async (searchTerm: string) => {
+		if (searchTerm === '') setSearchedComics([]);
+		if (!searchTerm || searchTerm.trim().length < 3) return;
+		try {
+			FullPageLoader.open({
+				label: 'Searching...',
+			});
+			const comicData = await searchComic(searchTerm);
+			console.log('Comic searched', comicData);
+			setSearchedComics(comicData);
+		} catch (error) {
+			alert('Something went wrong!');
+		} finally {
+			FullPageLoader.close();
+		}
+	};
 
 	useFocusEffect(
 		useCallback(() => {
@@ -32,20 +61,45 @@ export default function TabTwoScreen() {
 	);
 
 	return (
-		<SafeAreaView>
-			<AppHeader />
-			<ThemedView style={styles.container}>
-				<ThemedView style={styles.chaptersContainer}>
-					<Animated.View style={[animatedWidthStyle]}>
-						<ThemedView style={styles.chaptersInputHeading}>
-							<ThemedInput
-								placeholder='Search...'
-								onChangeText={(text) => setSearchQuery(text)}
-								value={searchQuery}
-							/>
-						</ThemedView>
-					</Animated.View>
+		<SafeAreaView style={{ flex: 1, display: 'flex', height: '100%' }}>
+			<ThemedView>
+				<ThemedView style={{ paddingBottom: 10 }}>
+					<AppHeader />
 				</ThemedView>
+				<ScrollView style={{ display: 'flex', height: '100%' }}>
+					<ThemedView style={styles.container}>
+						<ThemedView style={styles.chaptersContainer}>
+							<Animated.View style={[animatedWidthStyle]}>
+								<ThemedView style={styles.chaptersInputHeading}>
+									<ThemedInput
+										onEndEditing={() =>
+											searchAPI(searchQuery)
+										}
+										placeholder='Search...'
+										onChangeText={(text) => {
+											setSearchQuery(text);
+										}}
+										style={{ marginTop: 0 }}
+										value={searchQuery}
+									/>
+								</ThemedView>
+							</Animated.View>
+						</ThemedView>
+
+						<ThemedView style={{ paddingHorizontal: 20 }}>
+							{searchedComics?.map((comic, index) => (
+								<StandardComicTile
+									key={comic.title! + index}
+									data={comic}
+									onPress={(item) => {
+										console.log('Pressed', item.title);
+										router.push('/ComicDetail');
+									}}
+								/>
+							))}
+						</ThemedView>
+					</ThemedView>
+				</ScrollView>
 			</ThemedView>
 		</SafeAreaView>
 	);
@@ -54,7 +108,6 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
 	container: {
 		display: 'flex',
-		height: '100%',
 	},
 	headerImage: {
 		color: '#808080',

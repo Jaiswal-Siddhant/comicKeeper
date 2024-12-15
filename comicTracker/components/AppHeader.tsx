@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
 		paddingRight: 10,
 		paddingBottom: 0,
 		height: 45,
+		zIndex: 1,
 	},
 	appTitlePrimary: {
 		fontSize: 22,

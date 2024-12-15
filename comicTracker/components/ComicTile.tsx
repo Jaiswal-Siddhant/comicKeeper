@@ -24,7 +24,7 @@ export default function ComicTile({
 	onPress,
 }: {
 	data: ComicData;
-	onDelete: (title: string) => void;
+	onDelete?: (title: string) => void;
 	onPress: (data: ComicData) => void;
 }) {
 	const translateX = useSharedValue(0);
@@ -92,11 +92,13 @@ export default function ComicTile({
 					</ThemedView>
 				</Animated.View>
 			</GestureDetector>
-			<Animated.View style={[styles.deleteIcon, deleteIconStyle]}>
-				<TouchableOpacity onPress={() => onDelete(data.title)}>
-					<TabBarIcon name='trash-bin' style={styles.trashIcon} />
-				</TouchableOpacity>
-			</Animated.View>
+			{onDelete && (
+				<Animated.View style={[styles.deleteIcon, deleteIconStyle]}>
+					<TouchableOpacity onPress={() => onDelete(data.title)}>
+						<TabBarIcon name='trash-bin' style={styles.trashIcon} />
+					</TouchableOpacity>
+				</Animated.View>
+			)}
 		</Animated.View>
 	);
 }

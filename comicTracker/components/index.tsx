@@ -13,11 +13,12 @@ import { FullPageLoader } from './Loader';
 import ThemedImage from './Themed/ThemedImage';
 import EditComic from './EditComic';
 import ThemedSwitch from './Themed/ThemedSwitch';
-
+import StandardComicTile from './StandardComicTile';
 export {
-	ThemedText,
+	StandardComicTile,
 	Collapsible,
 	HelloWave,
+	ThemedText,
 	ParallaxScrollView,
 	ExternalLink,
 	ThemedView,

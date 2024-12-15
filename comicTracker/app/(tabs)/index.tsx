@@ -143,6 +143,8 @@ export default function HomeScreen() {
 						<RefreshControl
 							refreshing={refreshing}
 							onRefresh={getComics}
+							style={{ zIndex: -1 }}
+							progressViewOffset={50}
 						/>
 					}>
 					<AppHeader />

@@ -31,9 +31,29 @@ export const addComicToDB = async (comic: ComicData) => {
 		description,
 		imgUrl,
 	} = comic;
+
 	try {
+		const existingComic = await db.getFirstAsync(
+			'SELECT title FROM comics WHERE title = ?',
+			[title]
+		);
+
+		if (existingComic) {
+			console.log('Comic already exists in database');
+			return existingComic;
+		}
+
+		console.log('Adding comic to db');
 		await db.runAsync(
-			`INSERT OR REPLACE INTO comics (title, readChapters, totalChapters, isCompleted, lastRead, description, imgUrl) VALUES (?, ?, ?, ?, ?, ?, ?);`,
+			`INSERT INTO comics (
+                title, 
+                readChapters, 
+                totalChapters, 
+                isCompleted, 
+                lastRead, 
+                description, 
+                imgUrl
+            ) VALUES (?, ?, ?, ?, ?, ?, ?);`,
 			title,
 			readChapters,
 			totalChapters,
@@ -42,6 +62,9 @@ export const addComicToDB = async (comic: ComicData) => {
 			description,
 			imgUrl
 		);
+
+		// Return the newly inserted comic
+		return comic;
 	} catch (error) {
 		console.log('Error while saving to db', error);
 		return null;
